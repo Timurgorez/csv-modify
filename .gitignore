@@ -1,0 +1,35 @@
+# phpstorm project files
+.idea
+config/db.php
+webroot/.htaccess
+webroot/assets/**/*
+webroot/upload/**/*
+.htaccess
+composer.lock
+error.log
+node_modules
+webroot/uploads-gift-img/*
+webroot/uploads-event-img/*
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+# composer.phar
+
+# Mac DS_Store Files
+.DS_Store
+
+# phpunit itself is not needed
+phpunit.phar
+# local phpunit config
+/phpunit.xml
+
+tests/_output/*
+tests/_support/_generated
+
+#vagrant folder
+/.vagrant
