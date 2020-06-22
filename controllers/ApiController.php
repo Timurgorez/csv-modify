@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\ApiModel;
 use app\models\English;
 use app\models\EnglishKb;
 use app\models\EnglishNanorep;
@@ -75,49 +76,82 @@ class ApiController extends Controller
      */
     public function actionIndex()
     {
+        $model = new ApiModel();
 
+        $allData = null;
 
-
-        $arrData = [];
+        $arrDataUpdate = [];
         $arrDataId = [];
 
-        $homepage = file_get_contents('https://fujixerox.nanorep.co/api/kb/labels/v1/getUserLabels?kb=2142016383&apiKey=91f7850d-3ac9-4b64-9b2d-42c33c17eb7a');
+        if(Yii::$app->request->isPost) {
+
+            $url = Yii::$app->request->post('ApiModel')['url'];
+            $type_request = Yii::$app->request->post('ApiModel')['type_request'];
+            $json_data = Yii::$app->request->post('ApiModel')['json_data'];
+            $kb_name = Yii::$app->request->post('ApiModel')['kb_name'];
 
 
-        foreach (json_decode ($homepage) as $elem){
-            if( preg_match( '/O[1-9]/', $elem->name)){
-//                var_dump($elem->id);
-                $arrData[] = $elem;
-                $arrDataId[] = $elem->id;
-            };
+            if($type_request == "GET"){
+                $allData = [];
+                $homepage = file_get_contents($url);
+
+                foreach (json_decode ($homepage) as $key => $elem){
+                    if( preg_match( '/O[1-9]/', $elem->name)){
+    //                var_dump( json_encode( $elem) );
+                        $arrDataId[] = json_encode( $elem->id );
+                    }else{
+                        $arrDataUpdate[] = json_encode( $elem);
+                    };
+                    $allData[] = $elem;
+                }
+                $data = '{"update":['.implode(',', $arrDataUpdate).'],"delete":['.implode(',', $arrDataId).']}';
+
+//              print_r($data);
+            }else{
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                curl_setopt($ch, CURLOPT_POST, true);
+
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                $out = curl_exec($ch);
+                curl_close($ch);
+//                var_dump( json_decode($out) );
+                $allData = json_decode($out);
+            }
+
+
+
+
+            if(!is_array($allData) && empty($allData)){
+                var_dump($allData);
+            }
+
+
+
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => $allData,
+                'pagination' => [
+                    'pageSize' => 10000,
+                ],
+                'sort' => [
+                    'attributes' => ['id', 'name'],
+                ],
+            ]);
+
+            return $this->render('index', [
+                'model' => $model,
+                'dataProvider' => $dataProvider,
+            ]);
+
         }
-//        var_dump($arrDataId);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fujixerox.nanorep.co/api/kb/labels/v1/saveUserLabels?kb=2142016383&apiKey=91f7850d-3ac9-4b64-9b2d-42c33c17eb7a&sid=4130370340053538485');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"delete":'.$arrDataId.'}');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        $out = curl_exec($ch);
-        curl_close($ch);
-
-        echo $out;
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $arrData,
-            'pagination' => [
-                'pageSize' => 10000,
-            ],
-            'sort' => [
-                'attributes' => ['id', 'name'],
-            ],
-        ]);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'arrData' => $arrData,
+            'model' => $model,
         ]);
+
     }
 
 
