@@ -91,18 +91,20 @@ class ApiController extends Controller
                 $arrDataId[] = $elem->id;
             };
         }
-//        var_dump($arrDataId);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fujixerox.nanorep.co/api/kb/labels/v1/saveUserLabels?kb=2142016383&apiKey=91f7850d-3ac9-4b64-9b2d-42c33c17eb7a&sid=4130370340053538485');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"delete":'.$arrDataId.'}');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        $out = curl_exec($ch);
-        curl_close($ch);
-
-        echo $out;
+//        echo '<pte>';
+//        print_r($arrDataId);
+//        echo '</pte>';
+//
+//        $ch = curl_init();
+//        curl_setopt($ch, CURLOPT_URL, 'https://fujixerox.nanorep.co/api/kb/labels/v1/saveUserLabels?kb=2142016383&apiKey=91f7850d-3ac9-4b64-9b2d-42c33c17eb7a&sid=4130370340053538485');
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_POST, true);
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"delete":'.$arrDataId.'}');
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+//        $out = curl_exec($ch);
+//        curl_close($ch);
+//
+//        echo $out;
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $arrData,
