@@ -93,24 +93,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-<!--    --><?//= GridView::widget([
-//        'dataProvider' => $dataProvider,
-//        'filterModel' => $searchModel,
-//        'columns' => [
-//            ['class' => 'yii\grid\SerialColumn'],
-//
-//            'id',
-//            'internalId',
-//            'created_date',
-//            'question',
-//            'plain_text_answer:ntext',
-//            'html_answer:raw',
-//            'labels',
-//            'phrasings',
-//
-//            ['class' => 'yii\grid\ActionColumn'],
-//        ],
-//    ]); ?>
 
     <?php Pjax::end(); ?>
 
