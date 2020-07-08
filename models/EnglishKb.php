@@ -15,6 +15,7 @@ use Yii;
  * @property string $context
  * @property string $related_article
  * @property string $phrasings
+ * @property string $notes
  */
 class EnglishKb extends \yii\db\ActiveRecord
 {
@@ -32,8 +33,8 @@ class EnglishKb extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['article_id', 'title', 'answer'], 'required'],
-            [['answer', 'label', 'article_id', 'title', 'context', 'related_article', 'phrasings'], 'string'],
+            [['article_id', 'title', 'answer', 'notes'], 'required'],
+            [['answer', 'label', 'article_id', 'title', 'context', 'related_article', 'phrasings', 'notes'], 'string'],
         ];
     }
 
@@ -51,6 +52,7 @@ class EnglishKb extends \yii\db\ActiveRecord
             'context' => Yii::t('app', 'context:prodId'),
             'phrasings' => Yii::t('app', 'phrasing'),
             'related_article' => Yii::t('app', 'Related_article'),
+            'notes' => Yii::t('app', 'notes'),
         ];
     }
 }

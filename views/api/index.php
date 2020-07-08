@@ -22,7 +22,26 @@ $this->title = 'API Modify';
     <div class="jumbotron">
         <h1><?=$this->title?></h1>
 
-        <?php
+
+        <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+
+        <?= $form->field($model, 'url')->textarea() ?>
+
+        <?= $form->field($model, 'type_request')->textInput() ?>
+        <?= $form->field($model, 'json_data')->textarea() ?>
+
+
+
+
+        <div class="form-group">
+            <?= Html::submitButton('Submit', ['class' => 'btn btn-success']) ?>
+        </div>
+
+        <?php ActiveForm::end(); ?>
+
+
+
+        <?php if(Yii::$app->request->isPost) {
             echo GridView::widget([
             'dataProvider' => $dataProvider,
             'pjax'=>true,
@@ -53,15 +72,13 @@ $this->title = 'API Modify';
             'export' => [
                 'fontAwesome' => true
             ],
-        ]); ?>
+        ]);  }?>
 
 
     </div>
 
 </div>
 <script>
-
-    console.log(<?=json_encode($arrData)?>);
 
     
     

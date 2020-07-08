@@ -163,7 +163,7 @@ class EnglishKbController extends Controller
 
     public function actionModifyPhrasings ()
     {
-        $arrData = EnglishKb::find()->where(['not', ['phrasings' => null]])->all();
+        $arrData = EnglishKb::find()->where(['not', ['phrasings' => '']])->all();
 
         foreach ($arrData as $key => $value){
             $arr = explode('|', $value->phrasings);
@@ -351,5 +351,17 @@ class EnglishKbController extends Controller
         return $this->render('dynamic_table', [
             'dataProvider' => $dataProvider,
         ]);
+    }
+    public function actionTest ()
+    {
+        $arrData = EnglishKb::find()->filterWhere(['not like', 'article_id', '-222'])->all();
+
+        foreach ($arrData as $key => $value){
+
+            $value->article_id = $value->article_id.'-222';
+//            $value->save();
+        }
+        var_dump("All good");
+
     }
 }

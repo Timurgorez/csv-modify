@@ -46,6 +46,9 @@ class EnglishNanorepSearch extends EnglishNanorep
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 4000,
+            ],
         ]);
 
         $this->load($params);
