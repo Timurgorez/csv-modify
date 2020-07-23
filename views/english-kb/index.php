@@ -91,6 +91,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 },
             ],
+            [
+                'attribute' => 'notes',
+                'format'    => 'raw',
+                'label'     => 'notes'
+            ],
 //            'related_article',
 
 //            ['class' => 'yii\grid\ActionColumn'],

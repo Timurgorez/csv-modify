@@ -33,11 +33,10 @@ class EnglishNanorep extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['internalId', 'question', 'html_answer', 'external_id'], 'required'],
+            [['internalId', 'question', 'external_id'], 'required'],
 
-            [['internalId'], 'integer'],
-            [['phrasings','plain_text_answer'], 'safe'],
-            [['plain_text_answer', 'html_answer', 'context', 'external_id', 'question'], 'string']
+            [['phrasings','plain_text_answer', 'html_answer', 'plain_text_answer', 'html_answer', 'context', 'external_id', 'question', 'internalId' ], 'safe'],
+//            [['plain_text_answer', 'html_answer', 'context', 'external_id', 'question', 'internalId'], 'string']
         ];
     }
 

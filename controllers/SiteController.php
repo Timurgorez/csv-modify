@@ -151,28 +151,51 @@ class SiteController extends Controller
                         if(Yii::$app->request->post('FileUpload')['column'] == '1') {
                             $modelKb = new EnglishKb();
                             $modelKb->article_id = $arrCurrent['External_ID'];
-                            $modelKb->title = $arrCurrent['Title'];
-                            $modelKb->answer = $arrCurrent['Answer'];
-                            $modelKb->label = $arrCurrent['Label'];
+
+                            $title = str_replace('_x000D_', '', $arrCurrent['Title']);
+                            $title1 = str_replace('”', '`', $title);
+                            $title2 = str_replace('“', '`', $title1);
+                            $title3 = str_replace("'", '`', $title2);
+                            $modelKb->title = str_replace('"', '`', $title3);
+
+                            $answer = str_replace('&nbsp;', '', $arrCurrent['Answer']);
+                            $answer1 = str_replace('\r', '', $answer);
+                            $modelKb->answer = str_replace('_x000D_', '', $answer1);
+
+                            $modelKb->label = str_replace('_x000D_', '', $arrCurrent['Label']);
+
                             $modelKb->context = $arrCurrent['Context'];
-                            $modelKb->phrasings = $arrCurrent['Phrasing'];
+
+                            $phrasings = str_replace('_x000D_', '', $arrCurrent['Phrasing']);
+                            $phrasings1 = str_replace('“', '`', $phrasings);
+                            $phrasings2 = str_replace('“', '`', $phrasings1);
+                            $phrasings3 = str_replace("'", '`', $phrasings2);
+                            $modelKb->phrasings = str_replace('"', '`', $phrasings3);
+
                             $modelKb->related_article = $arrCurrent['Related_Item'];
+                            $modelKb->notes = $arrCurrent['External_ID'];
                             $modelKb->validate();
                             $modelKb->save();
                         }
                         if(Yii::$app->request->post('FileUpload')['column'] == '2') {
-                            $modelNano = new EnglishNanorep();
-                            $modelNano->internalId = $arrCurrent['Article_ID'];
-                            $modelNano->context = $arrCurrent['prodId'];
-                            $modelNano->question = $arrCurrent['Question'];
-                            $modelNano->plain_text_answer = $arrCurrent['Plain_Text_Answer'];
-                            $modelNano->html_answer = str_replace('_x000D_', '', $arrCurrent['HTML_Answer']);
-                            $modelNano->external_id = $arrCurrent['ExternalId'];
-                            $labels = str_replace(",", "|", $arrCurrent['Labels']);
-                            $modelNano->labels = $labels;
-                            $modelNano->phrasings = $arrCurrent['Phrasings'];
-                            $modelNano->validate();
-                            $modelNano->save();
+//                            var_dump($arrCurrent);
+                            if(!EnglishNanorep::find()->where( [ 'internalId' => $arrCurrent['Article_ID'] ] )->exists()) {
+                                $modelNano = new EnglishNanorep();
+                                $modelNano->internalId = $arrCurrent['Article_ID'];
+                                $modelNano->context = $arrCurrent['prodId'];
+                                $modelNano->question = $arrCurrent['Question'];
+                                $modelNano->plain_text_answer = $arrCurrent['Notes'];
+                                $modelNano->html_answer = str_replace('_x000D_', '', $arrCurrent['HTML_Answer']);
+                                $modelNano->external_id = $arrCurrent['ExternalId'];
+                                $labels = str_replace(", ", "|", $arrCurrent['Labels']);
+                                $modelNano->labels = $labels;
+                                $modelNano->phrasings = $arrCurrent['Phrasings'];
+                                $modelNano->validate();
+                                $modelNano->save();
+                            }
+//                            if(!$modelNano->save()){
+//                                var_dump($arrCurrent);
+//                            }
                         }
                         array_push($arrData, $arrCurrent);
                     }
@@ -365,30 +388,32 @@ class SiteController extends Controller
      */
     public function actionJoinTables()
     {
+        $counter = 0;
+
         $englishKbRelatedArticles = EnglishKb::find()->select(['related_article','article_id'])->where(['!=','related_article', ''])->all();
-//        var_dump(!false);
+//        var_dump($englishKbRelatedArticles);
 //        die();
 //        $this_art_changed = '';
 
         foreach ($englishKbRelatedArticles as $relatedArticle){
 
-            $nano_article = EnglishNanorep::find()->where(['external_id' => $relatedArticle->article_id])->one();
+            $nano_article = EnglishNanorep::find()->where(['plain_text_answer' => $relatedArticle->article_id])->one();
 
-            $str_related_article = '<hr><p class="related-article">Related article:</p><ul>';
+            $str_related_article = '<hr><p class="related-article">Artikel terkait:</p><ul>';
 
             $check = false;
 
             if(strrpos($relatedArticle->related_article, "|")){
                 $arr_related_article = explode('|', $relatedArticle->related_article);
                 foreach ($arr_related_article as $key => $one_related_article){
-                    $art_which_add = EnglishNanorep::find()->select(['internalId', 'question'])->where(['external_id' => trim($one_related_article)])->one();
+                    $art_which_add = EnglishNanorep::find()->select(['internalId', 'question', 'external_id'])->where(['external_id' => trim($one_related_article)])->one();
                     if($art_which_add){
                         $str_related_article .= '<li><a href="javascript:void(0)"  nanoreplinkid="'.$art_which_add->internalId .'">'.$art_which_add->question.'</a></li>';
                         $check = true;
                     }
                 }
             }else{
-                $art_which_add = EnglishNanorep::find()->select(['internalId', 'question'])->where(['external_id' => trim($relatedArticle->related_article)])->one();
+                $art_which_add = EnglishNanorep::find()->select(['internalId', 'question', 'external_id'])->where(['external_id' => trim($relatedArticle->related_article)])->one();
                 if($art_which_add) {
                     $str_related_article .= '<li><a href="javascript:void(0)"  nanoreplinkid="' . $art_which_add->internalId . '">' . $art_which_add->question . '</a></li>';
                     $check = true;
@@ -400,8 +425,14 @@ class SiteController extends Controller
                 && !strrpos($nano_article->html_answer, $str_related_article)
                 && $check
             ){
+
                 $nano_article->html_answer = $nano_article->html_answer . $str_related_article;
-                $nano_article->save();
+                if(!$nano_article->save()){
+                    var_dump($nano_article);
+                    die();
+                }else{
+                    $counter++;
+                }
             }
 //            else{
 //                $this_art_changed .= $nano_article->question .' ;';
@@ -411,7 +442,8 @@ class SiteController extends Controller
 //        if($this_art_changed){
 //            \Yii::$app->getSession()->setFlash('warning', 'This articles already has changes: '. $this_art_changed);
 //        }
-        \Yii::$app->getSession()->setFlash('success', 'Related articles have been added.');
+//        var_dump($counter);
+        \Yii::$app->getSession()->setFlash('success', 'Related articles have been added - '.$counter);
         return $this->redirect(['english-nanorep/index']);
     }
 

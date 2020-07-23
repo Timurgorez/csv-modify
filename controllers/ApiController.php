@@ -191,7 +191,7 @@ class ApiController extends Controller
             }
             $data = '{"update":['.implode(',', $arrDataUpdate).'],"delete":['.implode(',', $arrDataId).']}';
 
-            phpinfo();
+//            phpinfo();
             echo '<pre>';
           var_dump($data);
             echo '</pre>';
@@ -217,7 +217,6 @@ class ApiController extends Controller
     }
 
 
-
     public function actionMiddlewareDyson($country, $serialNumberPrefix)
     {
 //        var_dump($country);
@@ -225,6 +224,7 @@ class ApiController extends Controller
 //        $url = "https://www.dyson.co.jp/serialprefixlookupapi/serialprefixlookup/internal?country=" .
 //            strtoupper($country) .
 //            "&serialNumberPrefix=" . $serialNumberPrefix;
+
         $url = "https://api.dyson.com/apiman-gateway/dyson/machines/1.0/de/serialprefix/mt6?baseSiteId";
         $data = file_get_contents($url);
 //        $ch = curl_init($url);

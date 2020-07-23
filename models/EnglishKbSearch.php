@@ -18,7 +18,7 @@ class EnglishKbSearch extends EnglishKb
     {
         return [
             [['id'], 'integer'],
-            [['article_id', 'title', 'answer', 'label', 'context', 'related_article'], 'safe'],
+            [['article_id', 'title', 'answer', 'label', 'context', 'related_article', 'phrasings'], 'safe'],
         ];
     }
 
@@ -47,7 +47,7 @@ class EnglishKbSearch extends EnglishKb
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 5000,
+                'pageSize' => 2010,
             ],
         ]);
 
@@ -69,6 +69,7 @@ class EnglishKbSearch extends EnglishKb
             ->andFilterWhere(['like', 'answer', $this->answer])
             ->andFilterWhere(['like', 'label', $this->label])
             ->andFilterWhere(['like', 'context', $this->context])
+            ->andFilterWhere(['like', 'phrasings', $this->phrasings])
             ->andFilterWhere(['like', 'related_article', $this->related_article]);
 
         return $dataProvider;
