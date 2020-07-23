@@ -399,7 +399,7 @@ class SiteController extends Controller
 
             $nano_article = EnglishNanorep::find()->where(['plain_text_answer' => $relatedArticle->article_id])->one();
 
-            $str_related_article = '<hr><p class="related-article">Related article:</p><ul>';
+            $str_related_article = '<hr><p class="related-article">Artikel terkait:</p><ul>';
 
             $check = false;
 

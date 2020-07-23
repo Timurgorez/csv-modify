@@ -154,6 +154,69 @@ class ApiController extends Controller
 
     }
 
+
+    public function actionFilterJson()
+    {
+        $model = new ApiModel(['scenario' => ApiModel::SCENARIO_FILTER]);
+
+        $allData = null;
+
+        $arrDataUpdate = [];
+        $arrDataId = [];
+
+        if(Yii::$app->request->isPost) {
+
+            $json = Yii::$app->request->post('ApiModel')['json_data'];
+
+
+            $allData = [];
+
+
+            foreach (json_decode ($json) as $key => $elem){
+                if( preg_match( '/O[1-9]/', $elem->name)){
+                    //                var_dump( json_encode( $elem) );
+                    $arrDataId[] = $elem->id;
+                }else{
+                    if($elem->id == '2142250273') continue;
+                    $name = str_replace('"', "'", $elem->name );
+                    $json_str = json_encode($elem);
+                    $posStart = strripos($json_str, '"name":"') + 8;
+                    $posEnd = strripos($json_str, '","id"');
+                    $nameRemove = substr($json_str, $posStart, $posEnd - $posStart);
+                    $new_json_str = str_replace($nameRemove, $name, $json_str );
+                    $arrDataUpdate[] = $new_json_str;
+//                    var_dump($name);
+                };
+                $allData[] = $elem;
+            }
+            $data = '{"update":['.implode(',', $arrDataUpdate).'],"delete":['.implode(',', $arrDataId).']}';
+
+//            phpinfo();
+            echo '<pre>';
+          var_dump($data);
+            echo '</pre>';
+
+
+
+
+
+//            if(!is_array($allData) && empty($allData)){
+//                var_dump($allData);
+//            }
+
+            return $this->render('filter', [
+                'model' => $model,
+            ]);
+
+        }
+
+        return $this->render('filter', [
+            'model' => $model,
+        ]);
+
+    }
+
+
     public function actionMiddlewareDyson($country, $serialNumberPrefix)
     {
 //        var_dump($country);
@@ -161,23 +224,17 @@ class ApiController extends Controller
 //        $url = "https://www.dyson.co.jp/serialprefixlookupapi/serialprefixlookup/internal?country=" .
 //            strtoupper($country) .
 //            "&serialNumberPrefix=" . $serialNumberPrefix;
-//        $url = "https://api.dyson.com/apiman-gateway/dyson/machines/1.0/de/serialprefix/mt6?baseSiteId";
-        $url = "https://google.com";
-        $arrContextOptions=array(
-            "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            ),
-        );
-//        $data = file_get_contents($url, false, stream_context_create($arrContextOptions));
-//        $data = file_get_contents($url);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        $data = curl_exec($ch);
-        curl_close($ch);
+
+        $url = "https://api.dyson.com/apiman-gateway/dyson/machines/1.0/de/serialprefix/mt6?baseSiteId";
+        $data = file_get_contents($url);
+//        $ch = curl_init($url);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_HEADER, 0);
+//        $data = curl_exec($ch);
+//        curl_close($ch);
         var_dump($data);
     }
+
 
 
 }

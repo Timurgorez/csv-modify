@@ -19,13 +19,24 @@ class ApiModel extends \yii\db\ActiveRecord
     public $json_data;
     public $kb_name;
 
+    const SCENARIO_FILTER = 'filter';
+
     /**
      * {@inheritdoc}
      */
-//    public static function tableName()
-//    {
-//        return 'english_kb';
-//    }
+    public static function tableName()
+    {
+        return 'english_kb';
+    }
+
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_FILTER] = ['json_data'];
+        return $scenarios;
+    }
+
 
     /**
      * {@inheritdoc}
@@ -35,6 +46,9 @@ class ApiModel extends \yii\db\ActiveRecord
         return [
             [['url', 'type_request', 'json_data'], 'required'],
             [['url', 'type_request', 'json_data', 'kb_name'], 'string'],
+
+            // username и password требуются в сценарии "login"
+            [['json_data'], 'required', 'on' => self::SCENARIO_FILTER],
         ];
     }
 
