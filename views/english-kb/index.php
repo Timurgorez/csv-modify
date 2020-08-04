@@ -94,7 +94,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'notes',
                 'format'    => 'raw',
-                'label'     => 'notes'
+                'label'     => 'notes',
+                'value'     => function ($model) {
+                    if ($model->notes != null) {
+                        return $model->notes;
+                    } else {
+                        return '';
+                    }
+                },
             ],
 //            'related_article',
 
