@@ -391,15 +391,15 @@ class SiteController extends Controller
         $counter = 0;
 
         $englishKbRelatedArticles = EnglishKb::find()->select(['related_article','article_id'])->where(['!=','related_article', ''])->all();
-//        var_dump($englishKbRelatedArticles);
-//        die();
+
 //        $this_art_changed = '';
 
         foreach ($englishKbRelatedArticles as $relatedArticle){
 
-            $nano_article = EnglishNanorep::find()->where(['plain_text_answer' => $relatedArticle->article_id])->one();
-
-            $str_related_article = '<hr><p class="related-article">Artikel terkait:</p><ul>';
+            $nano_article = EnglishNanorep::find()->where(['external_id' => $relatedArticle->article_id])->one();
+//            var_dump($nano_article);
+//            die();
+            $str_related_article = '<hr><p class="related-article">相关项目:</p><ul>';
 
             $check = false;
 

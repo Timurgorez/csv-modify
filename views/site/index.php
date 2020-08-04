@@ -19,10 +19,33 @@ $this->title = 'CSV Modify';
 </style>
 <div class="site-index">
 
+
+    <div class="loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+
     <div class="jumbotron">
-        <h1><?=$this->title?></h1>
+<!--        <h1>--><?//=$this->title?><!--</h1>-->
 
-
+        <div class="item-hints">
+            <h2>Info</h2>
+            <div class="hint" data-position="4"><!-- is-hint -->
+                <span class="hint-radius"></span>
+                <span class="hint-dot"></span>
+                <div class="hint-content do--split-children">
+                    <h3>Info:</h3>
+                    <p>The file structure for the table 'Customer' should be:</p>
+                    <p>External ID, Title, Answer, Label, Context, Related Item, Phrasing.</p>
+                    <p>The file structure for the table 'Nanorep' should be:</p>
+                    <p>Article ID	Created Date	prodId	Question	Plain-Text Answer	HTML Answer	ExternalId	Labels	Notes	Phrasings</p>
+                </div>
+            </div>
+        </div>
 
 
         <?php
@@ -67,11 +90,22 @@ $this->title = 'CSV Modify';
 
         <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-        <?= $form->field($model, 'exFile')->fileInput() ?>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <?= $form->field($model, 'exFile')->fileInput()->label(false) ?>
+                </div>
+                <div class="col-md-6 text-left">
+                    <?= $form->field($model, 'spliter')->checkbox()->label(false) ?>
+                </div>
+            </div>
 
-        <?= $form->field($model, 'spliter')->checkbox()->label(false) ?>
 
+
+
+        <br>
         <p>In which table do you want to upload your data?</p>
+
+
         <?=
         $form->field($model, 'column')
             ->radioList(
@@ -94,7 +128,7 @@ $this->title = 'CSV Modify';
 
 
         <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton('Submit', ['class' => 'btn btn-success loading']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
