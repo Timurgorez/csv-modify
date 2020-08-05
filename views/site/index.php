@@ -30,8 +30,8 @@ $this->title = 'CSV Modify';
 
 
     <div class="jumbotron">
-<!--        <h1>--><?//=$this->title?><!--</h1>-->
-
+        <h1><?=$this->title?></h1>
+        <br>
         <div class="item-hints">
             <h2>Info</h2>
             <div class="hint" data-position="4"><!-- is-hint -->
