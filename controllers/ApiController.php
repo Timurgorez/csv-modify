@@ -88,7 +88,7 @@ class ApiController extends Controller
             $url = Yii::$app->request->post('ApiModel')['url'];
             $type_request = Yii::$app->request->post('ApiModel')['type_request'];
             $json_data = Yii::$app->request->post('ApiModel')['json_data'];
-            $kb_name = Yii::$app->request->post('ApiModel')['kb_name'];
+//            $kb_name = Yii::$app->request->post('ApiModel')['kb_name'];
 
 
             if($type_request == "GET"){
